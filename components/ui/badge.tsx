@@ -6,8 +6,8 @@ const badgeVariants = cva("inline-flex items-center rounded-full px-2 py-0.5 tex
   variants: {
     variant: {
       default: "bg-muted text-foreground",
-      secondary: "bg-primary/10 text-primary",
-      outline: "border"
+      secondary: "bg-status-approved-bg text-status-approved",
+      outline: "border border-border text-muted-foreground"
     }
   },
   defaultVariants: { variant: "default" }
