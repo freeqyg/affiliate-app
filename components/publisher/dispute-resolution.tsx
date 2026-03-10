@@ -5,6 +5,7 @@ import { DISPUTES, Dispute, getDisputeDaysRemaining, getDisputeUrgency } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ListRowButton } from "@/components/ui/list-surface";
 
 export function DisputeResolution({ showListHeader = true }: { showListHeader?: boolean }) {
   const [active, setActive] = useState<Dispute | null>(null);
@@ -38,7 +39,7 @@ export function DisputeResolution({ showListHeader = true }: { showListHeader?: 
         {DISPUTES.map((d) => {
           const urgency = getDisputeUrgency(d);
           return (
-            <button key={d.id} onClick={() => setActive(d)} className="w-full rounded-md border p-3 text-left hover:bg-muted/40">
+            <ListRowButton key={d.id} onClick={() => setActive(d)}>
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="font-medium">{d.subject}</p>
@@ -49,7 +50,7 @@ export function DisputeResolution({ showListHeader = true }: { showListHeader?: 
                   <span className={`text-xs ${urgency === "high" ? "text-status-reversed" : urgency === "medium" ? "text-status-pending" : "text-muted-foreground"}`}>{urgency}</span>
                 </div>
               </div>
-            </button>
+            </ListRowButton>
           );
         })}
       </CardContent>

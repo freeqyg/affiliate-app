@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Bell, Grip, User } from "lucide-react";
+import { AlertTriangle, Bell, Grip, Sparkles, User } from "lucide-react";
 import { ViewSwitcher } from "@/components/view-switcher";
 import { COMMISSIONS, CommissionStatus, getAgeDays } from "@/lib/mock-data";
 import { EarningsDashboard } from "@/components/publisher/earnings-dashboard";
@@ -13,10 +13,10 @@ import { EnrolledProgramDetail } from "@/components/publisher/enrolled-program-d
 import { DiscoverPrograms } from "@/components/publisher/discover-programs";
 import { ProgramDetail } from "@/components/publisher/program-detail";
 import { ProgramJoinConfirmation } from "@/components/publisher/program-join-confirmation";
+import { FigmaCaptureButton } from "@/components/capture/figma-capture-button";
 const publisherBrandEyeIcon = "https://www.figma.com/api/mcp/asset/6f91606e-cd72-4bdd-8b88-ecec4875ba12";
 const publisherBrandWordmark = "https://www.figma.com/api/mcp/asset/8d6dd311-66e5-425f-9478-ce95181650de";
 const publisherRailCollapseIcon = "https://www.figma.com/api/mcp/asset/1175bfce-0a06-40a7-b6b5-80d771f6fbc8";
-const publisherDiscoverCtaIcon = "https://www.figma.com/api/mcp/asset/14cea5d3-0bd4-42b1-8781-f16e676344c2";
 const publisherNavEarningsIcon = "https://www.figma.com/api/mcp/asset/ef7854bb-df02-4df8-b03f-6c93118449e0";
 const publisherNavMyProgramsIcon = "https://www.figma.com/api/mcp/asset/82c16886-14b5-480d-8a4d-f4fa9b6702a9";
 const publisherNavDisputesIcon = "https://www.figma.com/api/mcp/asset/b124d3fd-b7f4-41ba-9b8b-7015c7571196";
@@ -65,12 +65,17 @@ export function PublisherShell({
   const stalePending = COMMISSIONS.some((c) => c.status === "pending" && getAgeDays(c.conversionTimestamp) > c.validationWindowDays);
 
   const crumbs = useMemo(() => {
+    if (screen === "detail") {
+      return [
+        { label: commission.programName, onClick: () => { setActiveProgram(commission.programName); setScreen("enrolled-program-detail"); } },
+        { label: "Commission Detail", onClick: () => setScreen("detail") }
+      ];
+    }
     const list = [{ label: "Mr. Beast", onClick: () => setScreen("earnings") }];
-    if (screen === "detail") list.push({ label: activeCommissionId, onClick: () => setScreen("detail") });
     if (["program-detail", "program-joined", "enrolled-program-detail"].includes(screen)) list.push({ label: activeProgram, onClick: () => setScreen("program-detail") });
     if (screen === "disputes") list.push({ label: "Disputes", onClick: () => setScreen("disputes") });
     return list;
-  }, [screen, activeCommissionId, activeProgram]);
+  }, [screen, activeCommissionId, activeProgram, commission.programName]);
 
   function screenIntro() {
     if (screen === "earnings") {
@@ -116,20 +121,8 @@ export function PublisherShell({
             <img src={publisherRailCollapseIcon} alt="" aria-hidden className="h-5 w-5" />
           </div>
 
-          <div className="flex min-h-px min-w-px flex-1 flex-col items-center justify-between py-[10px]">
-            <button
-              className="flex h-10 w-[205px] items-center gap-0 overflow-hidden rounded-[11px] border-2 border-black bg-primary pl-px pr-0 text-left shadow-[4px_4px_0px_0px_black] hover:brightness-105"
-              onClick={() => setScreen("discover")}
-            >
-              <span className="flex min-w-0 flex-1 items-center px-[15px] py-[14px]">
-                <span className="truncate text-[16px] font-semibold leading-none tracking-[-0.16px] text-[#04070f]">
-                  Discover Programs
-                </span>
-              </span>
-              <span className="flex h-full w-8 shrink-0 items-center justify-center px-[6px] py-[5px]">
-                <img aria-hidden alt="" src={publisherDiscoverCtaIcon} className="h-5 w-5 shrink-0" />
-              </span>
-            </button>
+          <div className="flex min-h-px min-w-px flex-1 flex-col justify-between py-[10px]">
+            <div className="flex-1" />
 
             <nav className="w-full text-sm">
               <button className={navButton(screen === "earnings" || screen === "detail")} onClick={() => setScreen("earnings")}>
@@ -152,6 +145,19 @@ export function PublisherShell({
                   </span>
                 </span>
               </button>
+              <button
+                className={navButton(screen === "discover" || screen === "program-detail" || screen === "program-joined")}
+                onClick={() => setScreen("discover")}
+              >
+                <span className="flex w-full items-center overflow-hidden rounded-[6px] transition-colors group-hover:bg-black/10">
+                  <span className={["flex shrink-0 p-[5px]", screen === "discover" || screen === "program-detail" || screen === "program-joined" ? "opacity-100" : "opacity-50"].join(" ")}>
+                    <Sparkles aria-hidden className="h-5 w-5" strokeWidth={2} />
+                  </span>
+                  <span className={["flex min-h-px min-w-px flex-1 items-center px-[5px] py-px text-[16px] leading-[22.857px] tracking-[-0.32px]", screen === "discover" || screen === "program-detail" || screen === "program-joined" ? "font-semibold opacity-100" : "font-normal opacity-50"].join(" ")}>
+                    Discover Programs
+                  </span>
+                </span>
+              </button>
               <button className={navButton(screen === "disputes" || screen === "dispute-wizard")} onClick={() => setScreen("disputes")}>
                 <span className="flex w-full items-center overflow-hidden rounded-[6px] transition-colors group-hover:bg-black/10">
                   <span className={["flex shrink-0 p-[5px]", screen === "disputes" || screen === "dispute-wizard" ? "opacity-100" : "opacity-50"].join(" ")}>
@@ -164,16 +170,20 @@ export function PublisherShell({
               </button>
             </nav>
 
-            <div className="w-full" />
+            <div className="flex-1" />
           </div>
         </div>
 
-        <div className="h-[138px] space-y-3 border-t-2 border-black px-3 pt-[14px]">
-          <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-[#61e4ff]">
-            <img src={publisherSettingsIcon} alt="" aria-hidden className="h-4 w-4" />
-            Settings
-          </button>
-          <ViewSwitcher viewMode={viewMode} onChange={(v) => { setViewMode(v); setScreen("earnings"); }} />
+        <div className="w-full pb-2">
+          <div className="px-3 pb-2">
+            <button className="flex w-full items-center gap-2 rounded-[6px] px-2 py-2 text-sm hover:bg-black/5">
+              <img src={publisherSettingsIcon} alt="" aria-hidden className="h-4 w-4" />
+              Settings
+            </button>
+          </div>
+          <div className="border-t px-3 pt-3 pb-3" style={{ borderTopColor: "rgba(0,0,0,0.10)" }}>
+            <ViewSwitcher viewMode={viewMode} onChange={(v) => { setViewMode(v); setScreen("earnings"); }} />
+          </div>
         </div>
       </aside>
 
@@ -188,9 +198,15 @@ export function PublisherShell({
             ))}
           </div>
           <div className="flex items-center gap-4">
+            <FigmaCaptureButton />
             <button className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full border-2 border-[var(--background)] bg-[#ff82e6] text-[11px] font-semibold">11</span>
+              <span
+                className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full border-2 text-[11px] font-semibold"
+                style={{ backgroundColor: "var(--primary)", borderColor: "var(--background)" }}
+              >
+                11
+              </span>
             </button>
             <User className="h-5 w-5" />
             <Grip className="h-5 w-5" />
@@ -204,8 +220,8 @@ export function PublisherShell({
         )}
 
         <div className="flex-1 overflow-y-auto">
-          <div className={screen === "enrolled-program-detail" ? "w-full" : "mx-auto w-full max-w-[1180px] px-8 py-8"}>
-            {intro && (
+          <div className={screen === "enrolled-program-detail" || screen === "my-programs" ? "w-full" : "mx-auto w-full max-w-[1180px] px-8 py-8"}>
+            {intro && screen !== "my-programs" && (
               <div className="mb-[35px] flex h-[79.773px] w-full flex-col gap-2">
                 <div className="flex h-[50px] items-center">
                   <h1 className="font-[var(--font-jost)] text-[50px] font-semibold leading-[24px] tracking-[-0.2px] text-[#04070f]">

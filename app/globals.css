@@ -77,8 +77,27 @@ body {
   font-family: var(--font-jost), sans-serif;
 }
 
+.capture-mode-root {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;
+  overflow: auto;
+}
+
+.capture-mode-stage {
+  width: min(100%, var(--capture-width));
+  min-height: var(--capture-min-height);
+  isolation: isolate;
+}
+
 h1,
 h2,
 h3 {
   font-family: var(--font-jost), sans-serif;
+}
+
+h1 {
+  letter-spacing: -0.02em !important;
 }
