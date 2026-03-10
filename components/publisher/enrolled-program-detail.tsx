@@ -32,12 +32,12 @@ export function EnrolledProgramDetail({
     .reduce((acc, c) => acc + c.amount, 0);
 
   return (
-    <div className="relative grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="pointer-events-none absolute right-[360px] top-0 hidden h-full w-[2px] bg-black xl:block" />
+    <div className="relative grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_404px]">
+      <div className="pointer-events-none absolute right-[404px] top-0 hidden h-full w-[2px] bg-black xl:block" />
       <section className="space-y-6 px-8 py-8 xl:pr-6">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
           <div className="space-y-1">
-            <h1 className="text-[45px] font-semibold leading-[35px] tracking-[-0.2px] text-[#04070f]">{program.programName}</h1>
+            <h1 className="text-[40px] font-semibold leading-[34px] tracking-[-0.2px] text-[#04070f]">{program.programName}</h1>
             <p className="text-sm text-muted-foreground">{program.brandName} · Enrolled {program.enrolledDate}</p>
           </div>
           <div className="flex max-w-full items-center gap-2">
@@ -62,19 +62,19 @@ export function EnrolledProgramDetail({
 
       <aside className="border-t-2 border-black xl:sticky xl:top-0 xl:self-start xl:border-t-0">
         <div className="grid grid-cols-2 border-b-2 border-black">
-          <SidebarMetric className="border-r border-b border-black" icon={Activity} label="Approval Rate" value={program.trustSummary.approvalRate} />
-          <SidebarMetric className="border-b border-black" icon={BadgeDollarSign} label="Avg Payout" value={program.trustSummary.avgPayout} />
-          <SidebarMetric className="border-r border-black" icon={Users} label="Active Publishers" value={program.trustSummary.activePublishers} />
+          <SidebarMetric className="border-b border-r border-[#04070f]/20" icon={Activity} label="Approval Rate" value={program.trustSummary.approvalRate} />
+          <SidebarMetric className="border-b border-[#04070f]/20" icon={BadgeDollarSign} label="Avg Payout" value={program.trustSummary.avgPayout} />
+          <SidebarMetric className="border-r border-[#04070f]/20" icon={Users} label="Active Publishers" value={program.trustSummary.activePublishers} />
           <SidebarMetric icon={Clock} label="Validation" value={program.validationWindow} />
         </div>
 
-        <section className="border-b-2 border-black px-4 py-5">
-          <h2 className="text-[16px] font-semibold leading-[24px] tracking-[-0.4px] text-[#04070f]">Program Terms</h2>
-          <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
-            <Term label="Commission" value={`${program.commissionRate} ${program.commissionType}`} />
-            <Term label="Attribution" value={program.attributionModel} />
-            <Term label="Validation" value={program.validationWindow} />
-            <Term label="Dispute Window" value={program.disputeWindow} />
+        <section className="border-b border-[#04070f]/20 px-6 py-6">
+          <h2 className="text-[12px] font-semibold uppercase leading-[16px] tracking-[0.72px] text-[#04070f]/50">Program Terms</h2>
+          <div className="mt-4 grid grid-cols-2 gap-1.5 text-sm">
+            <TermCard label="Commission" value={`${program.commissionRate} ${program.commissionType}`} />
+            <TermCard label="Attribution" value={program.attributionModel} />
+            <TermCard label="Validation" value={program.validationWindow} />
+            <TermCard label="Dispute Window" value={program.disputeWindow} />
           </div>
         </section>
       </aside>
@@ -105,21 +105,21 @@ function SidebarMetric({
   value: string;
 }) {
   return (
-    <div className={`min-h-[142px] p-4 ${className ?? ""}`}>
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <p className="text-[12px] font-semibold uppercase leading-[16px] tracking-[0.72px] text-[#04070f]">{label}</p>
+    <div className={`min-h-[153px] p-5 ${className ?? ""}`}>
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <p className="text-[12px] font-semibold uppercase leading-[16px] tracking-[0.72px] text-[#04070f]/50">{label}</p>
         <Icon className="h-4 w-4" />
       </div>
-      <p className="text-[45px] font-semibold leading-[35px] tracking-[-0.2px] text-[#04070f]">{value}</p>
+      <p className="text-[35px] font-semibold leading-[35px] tracking-[-0.2px] text-[#04070f]">{value}</p>
     </div>
   );
 }
 
-function Term({ label, value }: { label: string; value: string }) {
+function TermCard({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-[14px] font-medium leading-[20px] text-[#04070f]">{value}</p>
+    <div className="rounded-[6px] bg-[rgba(55,220,255,0.3)] px-3 py-2.5">
+      <p className="text-[14px] font-normal leading-[16px] text-[#525c63]">{label}</p>
+      <p className="mt-1 text-[16px] font-medium leading-[20px] text-[#04070f]">{value}</p>
     </div>
   );
 }

@@ -1,6 +1,14 @@
 "use client";
 
-import { Commission, getAgeDays, getClickToConversionMinutes } from "@/lib/mock-data";
+import {
+  BRAND_PROGRAMS_DATA,
+  Commission,
+  CUSTOMER_PROFILES,
+  formatCurrency,
+  formatDateTime,
+  getAgeDays,
+  getClickToConversionMinutes
+} from "@/lib/mock-data";
 import { CommissionStatusChip, LifecycleTimeline } from "@/components/commission-status-chip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,9 +21,12 @@ export function CommissionDetail({
   onDispute: (id: string) => void;
 }) {
   const isPending = commission.status === "pending" || commission.status === "recorded";
+  const customer = CUSTOMER_PROFILES[commission.orderId];
+  const commissionRate = parseFloat(BRAND_PROGRAMS_DATA[commission.programName]?.commissionRate || "14");
+  const estimatedOrderValue = commissionRate > 0 ? commission.amount / (commissionRate / 100) : commission.amount;
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -44,6 +55,30 @@ export function CommissionDetail({
           )}
         </CardContent>
       </Card>
+
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Customer Insight</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="rounded-md border border-black/10 bg-[rgba(55,220,255,0.2)] p-3">
+              <p className="text-[15px] font-semibold leading-[20px] text-[#04070f]">
+                {customer?.name ?? "Unknown Buyer"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {customer ? `${customer.city}, ${customer.region}` : "Location unavailable"} · {customer?.buyerProfile ?? "General Buyer"}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <Field label="Purchased" value={customer?.purchased ?? commission.productCategory} />
+              <Field label="Order Ref" value={commission.orderId} />
+              <Field label="Conversion Date" value={formatDateTime(commission.conversionTimestamp)} />
+              <Field label="Order Value (est.)" value={formatCurrency(estimatedOrderValue, commission.currency)} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

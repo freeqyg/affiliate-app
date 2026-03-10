@@ -5,9 +5,9 @@ import { AlertTriangle, Check, Flag, Inbox, RotateCcw } from "lucide-react";
 import { Commission, REVERSAL_REASONS, formatCurrency, formatDateTime, getAgeDays, getPendingCommissions } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ListSurface } from "@/components/ui/list-surface";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { CommissionStatusChip } from "@/components/commission-status-chip";
@@ -37,18 +37,18 @@ export function CommissionQueue({
   }
 
   return (
-    <Card>
+    <ListSurface>
       {showHeader && (
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base">
+        <div className="px-6 pt-6">
+          <h2 className="flex items-center justify-between text-base font-semibold">
             <span>Commission Queue</span>
             <span className="text-sm font-normal text-muted-foreground">{rows.length} pending • {formatCurrency(total, "USD")}</span>
-          </CardTitle>
-        </CardHeader>
+          </h2>
+        </div>
       )}
-      <CardContent className={showHeader ? undefined : "pt-6"}>
+      <div className={showHeader ? "pt-4" : ""}>
         {selected.length > 0 && (
-          <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border bg-muted/40 p-2">
+          <div className="mx-6 mb-3 flex flex-wrap items-center gap-2 rounded-md border bg-muted/40 p-2">
             <span className="text-xs text-muted-foreground">{selected.length} selected</span>
             <Button size="sm" variant="secondary"><Check className="h-3.5 w-3.5" />Approve</Button>
             <Button size="sm" variant="outline"><RotateCcw className="h-3.5 w-3.5" />Reverse</Button>
@@ -57,7 +57,7 @@ export function CommissionQueue({
         )}
 
         {rows.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 py-10 text-center">
+          <div className="mx-6 flex flex-col items-center gap-2 py-10 text-center">
             <Inbox className="h-6 w-6 text-muted-foreground" />
             <p className="font-medium">You're all caught up</p>
           </div>
@@ -78,7 +78,7 @@ export function CommissionQueue({
             <TableBody>
               {rows.map((row) => (
                 <Fragment key={row.id}>
-                  <TableRow key={row.id} className="cursor-pointer" onClick={() => onOpenCommission(row.id)}>
+                  <TableRow key={row.id} className="group cursor-pointer" onClick={() => onOpenCommission(row.id)}>
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={selected.includes(row.id)}
@@ -92,10 +92,10 @@ export function CommissionQueue({
                     <TableCell>{row.riskFlags?.length ? <Badge>Flagged</Badge> : <span className="text-muted-foreground">Low</span>}</TableCell>
                     <TableCell><CommissionStatusChip status={row.status} /></TableCell>
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex justify-end gap-1">
-                        <Button size="icon" variant="ghost"><Check className="h-4 w-4 text-status-approved" /></Button>
-                        <Button size="icon" variant="ghost" onClick={() => setReversingId(reversingId === row.id ? null : row.id)}><RotateCcw className="h-4 w-4 text-status-reversed" /></Button>
-                        <Button size="icon" variant="ghost"><Flag className="h-4 w-4 text-status-pending" /></Button>
+                      <div className="flex justify-end gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+                        <Button size="icon" variant="secondary"><Check className="h-4 w-4" /></Button>
+                        <Button size="icon" variant="outline" onClick={() => setReversingId(reversingId === row.id ? null : row.id)}><RotateCcw className="h-4 w-4" /></Button>
+                        <Button size="icon" variant="outline"><Flag className="h-4 w-4" /></Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -111,8 +111,8 @@ export function CommissionQueue({
             </TableBody>
           </Table>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </ListSurface>
   );
 }
 

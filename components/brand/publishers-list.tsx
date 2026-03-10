@@ -1,7 +1,7 @@
 "use client";
 
 import { COMMISSIONS, formatCurrency } from "@/lib/mock-data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ListSurface } from "@/components/ui/list-surface";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function PublishersList({
@@ -23,9 +23,13 @@ export function PublishersList({
   );
 
   return (
-    <Card>
-      {showHeader && <CardHeader><CardTitle className="text-base">Publishers</CardTitle></CardHeader>}
-      <CardContent className={showHeader ? undefined : "pt-6"}>
+    <ListSurface>
+      {showHeader && (
+        <div className="px-6 pt-6">
+          <h2 className="text-base font-semibold">Publishers</h2>
+        </div>
+      )}
+      <div className={showHeader ? "pb-6 pt-4" : "pb-6 pt-6"}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -46,7 +50,7 @@ export function PublishersList({
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+      </div>
+    </ListSurface>
   );
 }

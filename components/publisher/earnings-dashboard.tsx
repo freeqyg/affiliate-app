@@ -4,6 +4,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import { COMMISSIONS, CommissionStatus, formatCurrency, formatDateTime, getAgeDays } from "@/lib/mock-data";
 import { CommissionStatusChip } from "@/components/commission-status-chip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ListSurface } from "@/components/ui/list-surface";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -66,8 +67,8 @@ export function EarningsDashboard({
       )}
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Earnings Trend</CardTitle></CardHeader>
-        <CardContent className="h-64">
+        <CardHeader className="px-6 pb-2 pt-6"><CardTitle className="text-base">Earnings Trend</CardTitle></CardHeader>
+        <CardContent className="h-64 px-6 pb-4 pt-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 6, right: 8, left: -12, bottom: 0 }}>
               <CartesianGrid stroke="#d7dbe0" strokeDasharray="3 5" vertical={false} />
@@ -113,8 +114,8 @@ export function EarningsDashboard({
           ))}
         </TabsList>
         <TabsContent value={tab}>
-          <Card>
-            <CardContent className="pt-6">
+          <ListSurface>
+            <div>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -137,8 +138,8 @@ export function EarningsDashboard({
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+            </div>
+          </ListSurface>
         </TabsContent>
       </Tabs>
     </div>
