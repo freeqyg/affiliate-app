@@ -39,7 +39,7 @@ export function buildProgramData() {
 
 export function MyPrograms({ onOpenProgram, onDiscover }: { onOpenProgram: (programName: string) => void; onDiscover: () => void }) {
   const rows = buildProgramData();
-  const [viewMode, setViewMode] = useState<ProgramViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ProgramViewMode>("list");
 
   useEffect(() => {
     const stored = window.localStorage.getItem(CREATOR_PROGRAM_VIEW_KEY);
