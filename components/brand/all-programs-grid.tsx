@@ -22,7 +22,7 @@ export function AllProgramsGrid({
   const programs = Object.values(BRAND_PROGRAMS_DATA).filter((program) =>
     !businessUnitId || businessUnitId === "all" ? true : program.businessUnitId === businessUnitId
   );
-  const [viewMode, setViewMode] = useState<ProgramViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ProgramViewMode>("list");
 
   useEffect(() => {
     const stored = window.localStorage.getItem(BRAND_PROGRAM_VIEW_KEY);
