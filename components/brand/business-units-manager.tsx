@@ -50,18 +50,18 @@ export function BusinessUnitsManager() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <div className="mx-auto w-full max-w-[860px] space-y-2 pt-[26px] text-center">
-        <h1 className="text-[44px] font-semibold leading-[1] tracking-[-0.2px] text-[#04070f]">Business Units</h1>
+    <div className="w-full max-w-[860px] space-y-6">
+      <div className="space-y-2 text-center">
+        <h1 className="text-[44px] font-semibold leading-[1] tracking-[-0.2px] text-[#04070f]">Businesses</h1>
         <p className="text-[18px] text-muted-foreground">
-          Organize programmes under business units tied to your brand.
+          Organize programmes under businesses tied to your brand.
         </p>
       </div>
 
-      <div className="mx-auto w-full max-w-[860px] rounded-[20px] border-2 border-black bg-white p-6 shadow-[4px_4px_0px_0px_black]">
+      <div className="w-full rounded-[20px] border-2 border-black bg-white p-6 shadow-[4px_4px_0px_0px_black]">
         <div className="mb-5 flex flex-wrap items-end gap-3 border-b border-black/10 pb-5">
           <div className="min-w-[260px] flex-1">
-            <label className="mb-2 block text-sm font-semibold text-[#04070f]">Add Business Unit</label>
+            <label className="mb-2 block text-sm font-semibold text-[#04070f]">Add Business</label>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}

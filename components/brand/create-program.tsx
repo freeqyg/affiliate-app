@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Calendar, Check, ChevronDown, Rocket, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,10 +39,12 @@ export type CreateProgramDraft = {
 
 export function CreateProgram({
   onSaveDraft,
-  onPublish
+  onPublish,
+  onStepChange
 }: {
   onSaveDraft: (draft: CreateProgramDraft) => void;
   onPublish: (draft: CreateProgramDraft) => void;
+  onStepChange?: (step: number) => void;
 }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<CreateProgramDraft>({
@@ -50,7 +52,7 @@ export function CreateProgram({
     category: "Snack & CPG",
     description: "",
     startDate: "",
-    endDate: "Ongoing",
+    endDate: "",
     commissionRate: "12",
     commissionType: "Percentage",
     cookieWindow: "30 days",
@@ -88,9 +90,13 @@ export function CreateProgram({
     };
   }, [step]);
 
-  const isStepOneInvalid = !form.programName.trim() || !form.commissionRate.trim();
+  const isStepOneInvalid = !form.programName.trim() || !form.startDate.trim() || !form.commissionRate.trim();
   const isLastStep = step === steps.length - 1;
   const commissionDisplay = form.commissionType === "Percentage" ? `${form.commissionRate || "0"}%` : `$${form.commissionRate || "0"}`;
+
+  useEffect(() => {
+    onStepChange?.(step);
+  }, [onStepChange, step]);
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -247,23 +253,14 @@ export function CreateProgram({
 
               <SectionDivider />
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Supporting note on reversals">
-                  <Segmented
-                    options={["Optional", "Required"]}
-                    value={form.explanationCommitment}
-                    onChange={(v) => setForm({ ...form, explanationCommitment: v as CreateProgramDraft["explanationCommitment"] })}
-                  />
-                </Field>
-
-                <Field label="Publisher dispute window">
-                  <SelectLike
-                    value={form.disputeWindow}
-                    options={["7 days", "14 days", "21 days"]}
-                    onChange={(v) => setForm({ ...form, disputeWindow: v })}
-                  />
-                </Field>
-              </div>
+              <GovernanceFooterRow
+                explanationCommitment={form.explanationCommitment}
+                disputeWindow={form.disputeWindow}
+                onExplanationChange={(v) =>
+                  setForm({ ...form, explanationCommitment: v as CreateProgramDraft["explanationCommitment"] })
+                }
+                onDisputeWindowChange={(v) => setForm({ ...form, disputeWindow: v })}
+              />
             </FlowSection>
           </FlowCard>
         </div>
@@ -275,7 +272,7 @@ export function CreateProgram({
             <FlowSection className="space-y-1">
               <p className="text-[32px] font-semibold tracking-[-0.2px] text-[#04070f]">{form.programName || "Program Name"}</p>
               <p className="text-[20px] text-muted-foreground">
-                {form.startDate || "Start date"} — {form.endDate || "End date"}
+                {formatProgramDate(form.startDate) || "Start date"} — {formatProgramDate(form.endDate) || "Ongoing"}
               </p>
             </FlowSection>
 
@@ -312,7 +309,7 @@ export function CreateProgram({
             title="Basics"
             rows={[
               ["Name", form.programName || "—"],
-              ["Dates", `${form.startDate || "—"} — ${form.endDate || "—"}`],
+              ["Dates", `${formatProgramDate(form.startDate) || "—"} — ${formatProgramDate(form.endDate) || "Ongoing"}`],
               ["Commission", `${commissionDisplay} per conversion`],
               ["Cookie window", form.cookieWindow],
               ["Validation window", form.validationWindow],
@@ -453,12 +450,42 @@ function DateLikeInput({
   placeholder: string;
   onChange: (value: string) => void;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="relative">
       <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black/50" />
-      <Input value={value} placeholder={placeholder} className={cn(FLOW_INPUT_CLASS, "pl-10")} onChange={(e) => onChange(e.target.value)} />
+      <Input
+        ref={inputRef}
+        type="date"
+        value={value}
+        aria-label={placeholder}
+        className={cn(
+          FLOW_INPUT_CLASS,
+          "pl-10 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:opacity-0"
+        )}
+        onChange={(e) => onChange(e.target.value)}
+        onClick={() => inputRef.current?.showPicker?.()}
+      />
     </div>
   );
+}
+
+function formatProgramDate(value: string) {
+  if (!value) {
+    return "";
+  }
+
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  }).format(date);
 }
 
 function Segmented({
@@ -657,6 +684,62 @@ function CommissionTypeRateRow({
           />
           {isPercent && <span className="text-[14px] text-[#04070f]">%</span>}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function GovernanceFooterRow({
+  explanationCommitment,
+  disputeWindow,
+  onExplanationChange,
+  onDisputeWindowChange
+}: {
+  explanationCommitment: CreateProgramDraft["explanationCommitment"];
+  disputeWindow: string;
+  onExplanationChange: (value: string) => void;
+  onDisputeWindowChange: (value: string) => void;
+}) {
+  return (
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,280px)_minmax(0,1fr)_minmax(0,180px)] lg:items-center">
+      <Label className="text-[16px] font-semibold tracking-[-0.32px] text-[#04070f] lg:text-[18px]">
+        Supporting note on reversals
+      </Label>
+
+      <div className="inline-flex h-10 w-full items-start rounded-[10px] border-2 border-black bg-black p-1 shadow-[2px_2px_0px_0px_black]">
+        {(["Optional", "Required"] as const).map((option) => (
+          <button
+            key={option}
+            type="button"
+            onClick={() => onExplanationChange(option)}
+            className={cn(
+              "flex flex-1 items-center justify-center rounded-[6px] px-4 py-1 text-[14px] font-medium leading-5 transition-colors",
+              explanationCommitment === option ? "bg-white text-black" : "text-white"
+            )}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+
+      <Label className="text-[16px] font-semibold tracking-[-0.32px] text-[#04070f] lg:text-[18px]">
+        Publisher dispute window
+      </Label>
+
+      <div className="relative w-full">
+        <select
+          value={disputeWindow}
+          onChange={(e) => onDisputeWindowChange(e.target.value)}
+          className="h-[56px] w-full appearance-none rounded-[14px] border border-black/10 bg-[rgba(224,249,255,0.6)] px-5 pr-12 text-[18px] font-medium tracking-[-0.36px] text-[#04070f]"
+          style={{ borderColor: "rgba(0,0,0,0.10)" }}
+        >
+          {["7 days", "14 days", "21 days"].map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-black/50" />
       </div>
     </div>
   );

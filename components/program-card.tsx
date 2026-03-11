@@ -20,7 +20,9 @@ export function ProgramCard({
   description,
   primaryMetrics,
   stats,
-  onOpen
+  onOpen,
+  badgeLabel,
+  ctaLabel = "View Program"
 }: {
   brandName: string;
   status: string;
@@ -29,13 +31,15 @@ export function ProgramCard({
   primaryMetrics: [ProgramCardPrimaryMetric, ProgramCardPrimaryMetric];
   stats: ProgramCardStat[];
   onOpen: () => void;
+  badgeLabel?: string;
+  ctaLabel?: string;
 }) {
   return (
     <article className="flex h-[460px] max-h-[460px] w-full min-w-0 flex-col overflow-hidden rounded-[20px] border-2 border-black bg-white shadow-[4px_4px_0px_0px_black]">
       <div className="flex min-h-px min-w-0 flex-1 flex-col gap-[15px] px-5 pt-5">
         <div className="flex items-start justify-between gap-3">
           <p className="text-xs font-semibold uppercase tracking-[0.6px] text-[#ff6088]">{brandName}</p>
-          <Badge className="h-[25px] border-0 px-[10px] py-[5px] text-[12px] font-medium shadow-none">{status}</Badge>
+          <Badge className="h-[25px] border-0 px-[10px] py-[5px] text-[12px] font-medium shadow-none">{badgeLabel || status}</Badge>
         </div>
         <h2 className="text-[30px] font-semibold leading-[100%] tracking-[-0.2px] text-[#04070f]">{programName}</h2>
         <p className="text-[14px] leading-[18.2px] text-muted-foreground">{description}</p>
@@ -76,7 +80,7 @@ export function ProgramCard({
         className="flex h-[44px] w-full items-center justify-center gap-2 bg-primary px-[111px] py-[7px] text-[20px] font-semibold leading-[30px] tracking-[-0.2px] text-[#04070f] hover:brightness-105"
         onClick={onOpen}
       >
-        <span className="whitespace-nowrap">View Program</span>
+        <span className="whitespace-nowrap">{ctaLabel}</span>
         <span aria-hidden className="relative top-[-0.5px]">›</span>
       </button>
     </article>
