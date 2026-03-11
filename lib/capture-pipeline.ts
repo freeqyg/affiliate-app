@@ -11,7 +11,6 @@ export const BRAND_CAPTURE_SCREENS: BrandScreen[] = [
   "dispute-detail",
   "publishers",
   "business-units",
-  "customer-insights",
   "detail",
   "create-program",
   "creator-detail"

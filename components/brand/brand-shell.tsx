@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Bell, Building2, ChartSpline, Grip, Settings, User } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Bell, Building2, Grip, Settings, User } from "lucide-react";
 import { ViewSwitcher } from "@/components/view-switcher";
 import { Button } from "@/components/ui/button";
 import { BRAND_PROGRAMS_DATA, COMMISSIONS, getProgramHierarchyByProgramId, getProgramHierarchyByProgramName } from "@/lib/mock-data";
@@ -14,10 +14,9 @@ import { PublishersList } from "@/components/brand/publishers-list";
 import { CreateProgram, CreateProgramDraft } from "@/components/brand/create-program";
 import { BusinessUnitsManager } from "@/components/brand/business-units-manager";
 import { CreatorInsights } from "@/components/brand/creator-insights";
-import { CustomerInsights } from "@/components/brand/customer-insights";
 import { FigmaCaptureButton } from "@/components/capture/figma-capture-button";
 
-export type BrandScreen = "all-programs" | "program-detail" | "queue" | "disputes" | "dispute-detail" | "publishers" | "business-units" | "detail" | "create-program" | "creator-detail" | "customer-insights";
+export type BrandScreen = "all-programs" | "program-detail" | "queue" | "disputes" | "dispute-detail" | "publishers" | "business-units" | "detail" | "create-program" | "creator-detail";
 const createProgramIcon = "https://www.figma.com/api/mcp/asset/a076753a-400d-4add-8301-1e6adba64c8a";
 const brandEyeIcon = "https://www.figma.com/api/mcp/asset/05344e1b-ddc1-4efb-a08a-78e83255c98a";
 const brandWordmark = "https://www.figma.com/api/mcp/asset/8e86cb85-e11a-484f-8bf2-1a74b4b4344e";
@@ -52,6 +51,8 @@ export function BrandShell({
   const [activeCommissionId, setActiveCommissionId] = useState<string>("COM-1001");
   const [activeCreator, setActiveCreator] = useState<string>("SnackScope");
   const [createdPrograms, setCreatedPrograms] = useState<(CreateProgramDraft & { status: "draft" | "active" })[]>([]);
+  const [createProgramStep, setCreateProgramStep] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialScreen) setScreen(initialScreen);
@@ -60,6 +61,16 @@ export function BrandShell({
   useEffect(() => {
     if (initialProgram) setActiveProgram(initialProgram);
   }, [initialProgram]);
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [screen]);
+
+  useEffect(() => {
+    if (screen !== "create-program") {
+      setCreateProgramStep(0);
+    }
+  }, [screen]);
 
   const selectedProgram = activeProgram !== "all" ? (BRAND_PROGRAMS_DATA[activeProgram] || createdPrograms.find((p) => p.programName === activeProgram)) : null;
   const activeCommission = COMMISSIONS.find((c) => c.id === activeCommissionId) || COMMISSIONS[0];
@@ -72,7 +83,7 @@ export function BrandShell({
       if (hierarchy) {
         return [
           { label: hierarchy.brand?.name || "Mr. Beast", onClick: () => { setScreen("all-programs"); setActiveProgram("all"); setActiveBusinessUnitId("all"); } },
-          { label: hierarchy.businessUnit?.name || "Business Unit", onClick: () => { setActiveBusinessUnitId(hierarchy.program.businessUnitId); setActiveProgram("all"); setScreen("all-programs"); } },
+          { label: hierarchy.businessUnit?.name || "Business", onClick: () => { setActiveBusinessUnitId(hierarchy.program.businessUnitId); setActiveProgram("all"); setScreen("all-programs"); } },
           { label: hierarchy.program.programName, onClick: () => { setActiveProgram(hierarchy.program.programName); setScreen("program-detail"); } },
           { label: "Commission Detail", onClick: () => setScreen("detail") }
         ];
@@ -82,13 +93,12 @@ export function BrandShell({
     if (activeProgram !== "all") {
       const hierarchy = getProgramHierarchyByProgramName(activeProgram);
       if (hierarchy) {
-        list.push({ label: hierarchy.businessUnit?.name || "Business Unit", onClick: () => { setActiveBusinessUnitId(hierarchy.program.businessUnitId); setActiveProgram("all"); setScreen("all-programs"); } });
+        list.push({ label: hierarchy.businessUnit?.name || "Business", onClick: () => { setActiveBusinessUnitId(hierarchy.program.businessUnitId); setActiveProgram("all"); setScreen("all-programs"); } });
       }
       list.push({ label: activeProgram, onClick: () => setScreen("program-detail") });
     }
     if (screen === "creator-detail") list.push({ label: activeCreator, onClick: () => setScreen("creator-detail") });
     if (screen === "disputes") list.push({ label: "Disputes", onClick: () => setScreen("disputes") });
-    if (screen === "customer-insights") list.push({ label: "Customer Insights", onClick: () => setScreen("customer-insights") });
     return list;
   }, [screen, activeProgram, activeCommissionId, activeCommission.programId, activeCommission.programName, activeCreator]);
 
@@ -120,12 +130,6 @@ export function BrandShell({
       return {
         title: "Creators",
         subtitle: "Monitor creator performance, conversion volume, and approval rates."
-      };
-    }
-    if (screen === "customer-insights") {
-      return {
-        title: "Customer Insights",
-        subtitle: "Understand who converts, why they convert, and how those patterns should shape future programmes."
       };
     }
     return null;
@@ -204,17 +208,7 @@ export function BrandShell({
                     <Building2 className="h-5 w-5" />
                   </span>
                   <span className={["flex min-h-px min-w-px flex-1 items-center px-[5px] py-px text-[16px] leading-[22.857px] tracking-[-0.32px]", screen === "business-units" ? "font-semibold opacity-100" : "font-normal opacity-50"].join(" ")}>
-                    Business Units
-                  </span>
-                </span>
-              </button>
-              <button className={navButton(screen === "customer-insights")} onClick={() => setScreen("customer-insights")}>
-                <span className="flex w-full items-center overflow-hidden rounded-[6px] transition-colors group-hover:bg-black/10">
-                  <span className={["flex shrink-0 p-[5px]", screen === "customer-insights" ? "opacity-100" : "opacity-50"].join(" ")}>
-                    <ChartSpline className="h-5 w-5" />
-                  </span>
-                  <span className={["flex min-h-px min-w-px flex-1 items-center px-[5px] py-px text-[16px] leading-[22.857px] tracking-[-0.32px]", screen === "customer-insights" ? "font-semibold opacity-100" : "font-normal opacity-50"].join(" ")}>
-                    Customer Insights
+                    Businesses
                   </span>
                 </span>
               </button>
@@ -245,9 +239,19 @@ export function BrandShell({
       <main className="flex min-w-0 flex-1 flex-col bg-[var(--background)]">
         <header className="flex h-[60px] shrink-0 items-center justify-between gap-2 border-b-2 border-black bg-[var(--background)] px-6 text-sm">
           <div className="flex items-center gap-2 text-[15px]">
-            <button className="hover:underline" onClick={() => { setScreen("all-programs"); setActiveProgram("all"); setActiveBusinessUnitId("all"); }}>Mr. Beast</button>
-            {screen === "all-programs" && <span>Overview</span>}
-            {screen !== "all-programs" &&
+            {screen === "create-program" ? (
+              <>
+                <span>New Program</span>
+                <span>/</span>
+                <span>{`Step ${createProgramStep + 1}`}</span>
+              </>
+            ) : (
+              <>
+                <button className="hover:underline" onClick={() => { setScreen("all-programs"); setActiveProgram("all"); setActiveBusinessUnitId("all"); }}>Mr. Beast</button>
+                {screen === "all-programs" && <span>Overview</span>}
+              </>
+            )}
+            {screen !== "all-programs" && screen !== "create-program" &&
               crumbs.slice(1).map((c, i) => (
                 <div key={`${c.label}-${i}`} className="flex items-center gap-2">
                   <span>/</span>
@@ -271,8 +275,16 @@ export function BrandShell({
             <Grip className="h-5 w-5" />
           </div>
         </header>
-        <div className="flex-1 overflow-y-auto">
-          <div className={screen === "program-detail" || screen === "all-programs" || screen === "business-units" || screen === "creator-detail" ? "w-full" : "mx-auto w-full max-w-[1180px] px-8 py-8"}>
+        <div ref={contentRef} className="flex-1 overflow-y-auto">
+          <div
+            className={
+              screen === "business-units"
+                ? "flex min-h-full w-full items-center justify-center px-8 py-8"
+                : screen === "program-detail" || screen === "all-programs" || screen === "creator-detail"
+                  ? "w-full"
+                  : "mx-auto w-full max-w-[1180px] px-8 py-8"
+            }
+          >
             {intro && (
               <div className="mb-[35px] flex h-[79.773px] w-full flex-col gap-2">
                 <div className="flex h-[50px] items-center">
@@ -311,9 +323,9 @@ export function BrandShell({
             {screen === "disputes" && <DisputeInbox onOpenCommission={openCommission} showListHeader={false} />}
             {screen === "publishers" && <PublishersList programFilter={activeProgram} showHeader={false} />}
             {screen === "business-units" && <BusinessUnitsManager />}
-            {screen === "customer-insights" && <CustomerInsights />}
             {screen === "create-program" && (
               <CreateProgram
+                onStepChange={setCreateProgramStep}
                 onSaveDraft={(draft) => {
                   setCreatedPrograms((prev) => [...prev.filter((p) => p.programName !== draft.programName), { ...draft, status: "draft" }]);
                   setActiveProgram(draft.programName);

@@ -188,7 +188,7 @@ export function CreatorInsights({
             </div>
           </div>
           <div className="text-right text-sm text-muted-foreground">
-            <p className="font-medium text-[#04070f]">{data.businessUnits.join(" • ") || "No business units yet"}</p>
+            <p className="font-medium text-[#04070f]">{data.businessUnits.join(" • ") || "No businesses yet"}</p>
             <p>{data.programRows.length} programs across the brand relationship</p>
           </div>
         </div>
@@ -205,7 +205,7 @@ export function CreatorInsights({
         <SummaryCard icon={CheckCircle2} label="Approval vs Decline" value={`${data.approvalRate.toFixed(1)}%`} subValue={`${data.approved} approved • ${data.declined} declined`} />
         <SummaryCard icon={Building2} label="Program Participation" value={`${data.activePrograms} active`} subValue={`${data.historicalPrograms} historical`} />
         <SummaryCard icon={AlertTriangle} label="Dispute Frequency" value={`${data.disputeFrequency.toFixed(1)}%`} subValue={`${data.disputeCount} total disputes`} />
-        <SummaryCard icon={Users} label="Business Units" value={`${data.businessUnits.length}`} subValue="Across brand account" />
+        <SummaryCard icon={Users} label="Businesses" value={`${data.businessUnits.length}`} subValue="Across brand account" />
       </div>
 
       <ListSurface>
@@ -217,7 +217,7 @@ export function CreatorInsights({
             <TableHeader>
               <TableRow>
                 <TableHead>Programme</TableHead>
-                <TableHead>Business Unit</TableHead>
+                <TableHead>Business</TableHead>
                 <TableHead>Conversions</TableHead>
                 <TableHead>Total Commissions</TableHead>
                 <TableHead>Total Revenue</TableHead>
@@ -252,7 +252,7 @@ export function CreatorInsights({
             <TableHeader>
               <TableRow>
                 <TableHead>Programme</TableHead>
-                <TableHead>Business Unit</TableHead>
+                <TableHead>Business</TableHead>
                 <TableHead>Order Ref</TableHead>
                 <TableHead>Commission</TableHead>
                 <TableHead>Order Value</TableHead>
@@ -338,7 +338,7 @@ export function CreatorInsights({
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-[18px]">Revenue Contribution by Business Unit</CardTitle>
+            <CardTitle className="text-[18px]">Revenue Contribution by Business</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {data.byBusinessUnit.map((unit) => (

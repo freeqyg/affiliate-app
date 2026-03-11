@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Bell, Grip, Sparkles, User } from "lucide-react";
 import { ViewSwitcher } from "@/components/view-switcher";
 import { COMMISSIONS, CommissionStatus, getAgeDays } from "@/lib/mock-data";
@@ -56,10 +56,15 @@ export function PublisherShell({
   const [activeCommissionId, setActiveCommissionId] = useState("COM-1004");
   const [activeProgram, setActiveProgram] = useState("Chocolate Bar Drop Vol. 3");
   const [tab, setTab] = useState<"all" | CommissionStatus>("all");
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialScreen) setScreen(initialScreen);
   }, [initialScreen]);
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [screen]);
 
   const commission = COMMISSIONS.find((c) => c.id === activeCommissionId) || COMMISSIONS[0];
   const stalePending = COMMISSIONS.some((c) => c.status === "pending" && getAgeDays(c.conversionTimestamp) > c.validationWindowDays);
@@ -219,7 +224,7 @@ export function PublisherShell({
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto">
+        <div ref={contentRef} className="flex-1 overflow-y-auto">
           <div className={screen === "enrolled-program-detail" || screen === "my-programs" ? "w-full" : "mx-auto w-full max-w-[1180px] px-8 py-8"}>
             {intro && screen !== "my-programs" && (
               <div className="mb-[35px] flex h-[79.773px] w-full flex-col gap-2">

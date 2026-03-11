@@ -115,7 +115,7 @@ export function AllProgramsGrid({
               <TableHeader>
                 <TableRow>
                   <TableHead>Programme</TableHead>
-                  <TableHead>Business Unit</TableHead>
+                  <TableHead>Business</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Revenue</TableHead>
                   <TableHead>Orders</TableHead>
