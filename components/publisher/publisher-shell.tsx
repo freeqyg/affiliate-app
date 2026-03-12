@@ -14,13 +14,13 @@ import { DiscoverPrograms } from "@/components/publisher/discover-programs";
 import { ProgramDetail } from "@/components/publisher/program-detail";
 import { ProgramJoinConfirmation } from "@/components/publisher/program-join-confirmation";
 import { FigmaCaptureButton } from "@/components/capture/figma-capture-button";
-const publisherBrandEyeIcon = "https://www.figma.com/api/mcp/asset/6f91606e-cd72-4bdd-8b88-ecec4875ba12";
-const publisherBrandWordmark = "https://www.figma.com/api/mcp/asset/8d6dd311-66e5-425f-9478-ce95181650de";
-const publisherRailCollapseIcon = "https://www.figma.com/api/mcp/asset/1175bfce-0a06-40a7-b6b5-80d771f6fbc8";
-const publisherNavEarningsIcon = "https://www.figma.com/api/mcp/asset/ef7854bb-df02-4df8-b03f-6c93118449e0";
-const publisherNavMyProgramsIcon = "https://www.figma.com/api/mcp/asset/82c16886-14b5-480d-8a4d-f4fa9b6702a9";
-const publisherNavDisputesIcon = "https://www.figma.com/api/mcp/asset/b124d3fd-b7f4-41ba-9b8b-7015c7571196";
-const publisherSettingsIcon = "https://www.figma.com/api/mcp/asset/1c17d56c-afd4-4a4c-a042-3ee5f57eb528";
+const publisherBrandEyeIcon = "/assets/nav/publisher/eye.svg";
+const publisherBrandWordmark = "/assets/nav/publisher/wordmark.svg";
+const publisherRailCollapseIcon = "/assets/nav/publisher/rail-collapse.svg";
+const publisherNavEarningsIcon = "/assets/nav/publisher/earnings.svg";
+const publisherNavMyProgramsIcon = "/assets/nav/publisher/my-programs.svg";
+const publisherNavDisputesIcon = "/assets/nav/publisher/disputes.svg";
+const publisherSettingsIcon = "/assets/nav/publisher/settings.svg";
 
 export type PublisherScreen =
   | "earnings"

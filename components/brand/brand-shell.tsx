@@ -17,13 +17,13 @@ import { CreatorInsights } from "@/components/brand/creator-insights";
 import { FigmaCaptureButton } from "@/components/capture/figma-capture-button";
 
 export type BrandScreen = "all-programs" | "program-detail" | "queue" | "disputes" | "dispute-detail" | "publishers" | "business-units" | "detail" | "create-program" | "creator-detail";
-const createProgramIcon = "https://www.figma.com/api/mcp/asset/a076753a-400d-4add-8301-1e6adba64c8a";
-const brandEyeIcon = "https://www.figma.com/api/mcp/asset/05344e1b-ddc1-4efb-a08a-78e83255c98a";
-const brandWordmark = "https://www.figma.com/api/mcp/asset/8e86cb85-e11a-484f-8bf2-1a74b4b4344e";
-const railCollapseIcon = "https://www.figma.com/api/mcp/asset/aedf3b33-11ea-49bb-aff7-d9124e170b71";
-const navAllProgramsIcon = "https://www.figma.com/api/mcp/asset/ae965d9e-7762-404c-9858-ae5b291be3c1";
-const navCommissionsIcon = "https://www.figma.com/api/mcp/asset/1748b546-bc95-4019-bfbb-c8155c8d8527";
-const navDisputesIcon = "https://www.figma.com/api/mcp/asset/ed672f88-c4d0-4048-9ac2-41665cd78124";
+const createProgramIcon = "/assets/nav/brand/create-program.svg";
+const brandEyeIcon = "/assets/nav/brand/eye.svg";
+const brandWordmark = "/assets/nav/brand/wordmark.svg";
+const railCollapseIcon = "/assets/nav/brand/rail-collapse.svg";
+const navAllProgramsIcon = "/assets/nav/brand/all-programs.svg";
+const navCommissionsIcon = "/assets/nav/brand/commissions.svg";
+const navDisputesIcon = "/assets/nav/brand/disputes.svg";
 
 function navButton(active: boolean) {
   return [
